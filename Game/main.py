@@ -19,7 +19,8 @@ class Player(pygame.sprite.Sprite):
         super(Player, self).__init__()
         self.surf = pygame.Surface((75, 25))
         self.surf.fill((255, 255, 255))
-        self.rect = self.surf.get_rect()
+        self.rect = self.surf.get_rect()        
+
 
 # Initialize pygame
 pygame.init()
@@ -27,7 +28,7 @@ pygame.init()
 # Create the screen object
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
-# Instantiate player. Right now, this is just a rectangle.
+
 player = Player()
 
 # Variable to keep the main loop running
@@ -35,22 +36,17 @@ running = True
 
 # Main loop
 while running:
-    # for loop through the event queue
     for event in pygame.event.get():
-        # Check for KEYDOWN event
         if event.type == KEYDOWN:
-            # If the Esc key is pressed, then exit the main loop
             if event.key == K_ESCAPE:
                 running = False
-        # Check for QUIT event. If QUIT, then set running to false.
+
         elif event.type == QUIT:
             running = False
 
-    # Fill the screen with black
     screen.fill((0, 0, 0))
 
-    # Draw the player on the screen
-    screen.blit(player.surf, (SCREEN_WIDTH/2, SCREEN_HEIGHT/2))
+    screen.blit(player.surf, player.rect)
 
-    # Update the display
     pygame.display.flip()
+
