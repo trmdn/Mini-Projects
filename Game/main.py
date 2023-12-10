@@ -1,5 +1,6 @@
 import pygame
 import random
+import sys
 
 from pygame.locals import (
     RLEACCEL,
@@ -10,6 +11,7 @@ from pygame.locals import (
     K_ESCAPE,
     KEYDOWN,
     QUIT,
+    MOUSEBUTTONDOWN,
 )
 
 # Define constants for the screen width and height
@@ -18,11 +20,36 @@ SCREEN_HEIGHT = 600
 
 pygame.display.set_caption("JUST A GAME")
 
+def game_over_screen():
+    #Game Over Text
+    font = pygame.font.Font(None, 50)
+    game_over_text = font.render("Game Over", True, (255, 0, 0))
+    text_rect = game_over_text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
+    screen.blit(game_over_text, text_rect)
+
+    #Try Again Button
+    try_again_rect = pygame.Rect(300, 400, 200, 75)
+    pygame.draw.rect(screen, (0, 0, 0), try_again_rect)
+    try_again_text = font.render("Try Again", True, (255, 255, 255))
+    text_rect = try_again_text.get_rect(center=try_again_rect.center)
+    screen.blit(try_again_text, text_rect)
+
+    pygame.display.flip()
+
+    while True:
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                pygame.quit()
+                quit()
+            elif event.type == MOUSEBUTTONDOWN:
+                mouse_x, mouse_y = pygame.mouse.get_pos()
+                if try_again_rect.collidepoint(mouse_x, mouse_y):
+                    return True # Restart the game
 #Player
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         super(Player, self).__init__()
-        self.surf = pygame.image.load("jet.png").convert()
+        self.surf = pygame.image.load("D:\SoftUni\Mini-Projects\Game\jet.png").convert()
         self.surf.set_colorkey((255, 255, 255), RLEACCEL)
         self.surf = pygame.Surface((75, 25))
         self.surf.fill((255, 255, 255))
@@ -107,6 +134,8 @@ clouds = pygame.sprite.Group()
 all_sprites = pygame.sprite.Group()
 all_sprites.add(player)
 
+clock = pygame.time.Clock(  )
+
 # Variable to keep the main loop running
 running = True
 
@@ -136,6 +165,14 @@ while running:
     enemies.update()
     clouds.update()
 
+    if pygame.sprite.spritecollideany(player, enemies):
+        if game_over_screen():
+            player = Player()
+            all_sprites = pygame.sprite.Group()
+            all_sprites.add(player)
+            enemies.empty()
+            clouds.empty()
+
     screen.fill((0, 0, 0))
     screen.fill((135, 206, 250))
 
@@ -151,5 +188,6 @@ while running:
     screen.blit(player.surf, player.rect)
 
     pygame.display.flip()
+    clock.tick(30)
 
 
