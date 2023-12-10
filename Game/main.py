@@ -2,6 +2,7 @@ import pygame
 import random
 
 from pygame.locals import (
+    RLEACCEL,
     K_UP,
     K_DOWN,
     K_LEFT,
@@ -21,6 +22,8 @@ pygame.display.set_caption("JUST A GAME")
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         super(Player, self).__init__()
+        self.surf = pygame.image.load("jet.png").convert()
+        self.surf.set_colorkey((255, 255, 255), RLEACCEL)
         self.surf = pygame.Surface((75, 25))
         self.surf.fill((255, 255, 255))
         self.rect = self.surf.get_rect()        
@@ -48,6 +51,8 @@ class Player(pygame.sprite.Sprite):
 class Enemy(pygame.sprite.Sprite):
     def __init__(self):
         super(Enemy, self).__init__()
+        self.surf = pygame.image.load("missile.png").convert()
+        self.surf.set_colorkey((255, 255, 255), RLEACCEL)
         self.surf = pygame.Surface((20, 10))
         self.surf.fill((255, 255, 255))
         self.rect = self.surf.get_rect(
@@ -63,6 +68,25 @@ class Enemy(pygame.sprite.Sprite):
         if self.rect.right < 0:
             self.kill()
 
+class Cloud(pygame.sprite.Sprite):
+    def __init__(self):
+        super(Cloud, self).__init__()
+        self.surf = pygame.image.load("cloud.png").convert()
+        self.surf.set_colorkey((0, 0, 0), RLEACCEL)
+        # The starting position is randomly generated
+        self.rect = self.surf.get_rect(
+            center=(
+                random.randint(SCREEN_WIDTH + 20, SCREEN_WIDTH + 100),
+                random.randint(0, SCREEN_HEIGHT),
+            )
+        )
+
+    # Move the cloud based on a constant speed
+    # Remove the cloud when it passes the left edge of the screen
+    def update(self):
+        self.rect.move_ip(-5, 0)
+        if self.rect.right < 0:
+            self.kill()
 
 # Initialize pygame
 pygame.init()
@@ -72,10 +96,14 @@ screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
 ADDENEMY = pygame.USEREVENT + 1
 pygame.time.set_timer(ADDENEMY, 250)
+ADDCLOUD = pygame.USEREVENT + 2
+pygame.time.set_timer(ADDCLOUD, 1000)
+
 
 player = Player()
 
 enemies = pygame.sprite.Group()
+clouds = pygame.sprite.Group()
 all_sprites = pygame.sprite.Group()
 all_sprites.add(player)
 
@@ -97,15 +125,28 @@ while running:
             enemies.add(new_enemy)
             all_sprites.add(new_enemy)
 
+        elif event.type == ADDCLOUD:
+            new_cloud = Cloud()
+            clouds.add(new_cloud)
+            all_sprites.add(new_cloud)
+
     pressed_keys = pygame.key.get_pressed()
     player.update(pressed_keys)
 
     enemies.update()
+    clouds.update()
 
     screen.fill((0, 0, 0))
+    screen.fill((135, 206, 250))
 
     for entity in all_sprites:
         screen.blit(entity.surf, entity.rect)
+    
+    # Check if any enemies have collided with the player
+    if pygame.sprite.spritecollideany(player, enemies):
+        # If so, then remove the player and stop the loop
+        player.kill()
+        running = False
 
     screen.blit(player.surf, player.rect)
 
