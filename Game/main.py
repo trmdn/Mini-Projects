@@ -29,8 +29,8 @@ def game_over_screen():
 
     #Try Again Button
     try_again_rect = pygame.Rect(300, 400, 200, 75)
-    pygame.draw.rect(screen, (0, 0, 0), try_again_rect)
-    try_again_text = font.render("Try Again", True, (255, 255, 255))
+    pygame.draw.rect(screen, (255, 255, 255), try_again_rect)
+    try_again_text = font.render("Try Again", True, (0, 0, 0))
     text_rect = try_again_text.get_rect(center=try_again_rect.center)
     screen.blit(try_again_text, text_rect)
 
@@ -49,7 +49,7 @@ def game_over_screen():
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         super(Player, self).__init__()
-        self.surf = pygame.image.load("D:\SoftUni\Mini-Projects\Game\jet.png").convert()
+        self.surf = pygame.image.load("jet.png").convert()
         self.surf.set_colorkey((255, 255, 255), RLEACCEL)
         self.surf = pygame.Surface((75, 25))
         self.surf.fill((255, 255, 255))
@@ -134,7 +134,7 @@ clouds = pygame.sprite.Group()
 all_sprites = pygame.sprite.Group()
 all_sprites.add(player)
 
-clock = pygame.time.Clock(  )
+clock = pygame.time.Clock()
 
 # Variable to keep the main loop running
 running = True
@@ -174,7 +174,7 @@ while running:
             clouds.empty()
 
     screen.fill((0, 0, 0))
-    screen.fill((135, 206, 250))
+    # screen.fill((135, 206, 250))
 
     for entity in all_sprites:
         screen.blit(entity.surf, entity.rect)
