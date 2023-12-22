@@ -1,6 +1,8 @@
 import pygame
 import random
-import sys
+import os
+
+pygame.init()
 
 from pygame.locals import (
     RLEACCEL,
@@ -50,10 +52,12 @@ class Player(pygame.sprite.Sprite):
     def __init__(self):
         super(Player, self).__init__()
         self.surf = pygame.image.load("jet.png").convert()
-        self.surf.set_colorkey((255, 255, 255), RLEACCEL)
-        self.surf = pygame.Surface((75, 25))
-        self.surf.fill((255, 255, 255))
-        self.rect = self.surf.get_rect()        
+        pygame.transform.scale(self.surf, [75, 25])
+        #self.surf.set_colorkey((255, 255, 255), RLEACCEL)
+        #self.surf = pygame.Surface((75, 25))
+        #self.surf.fill((255, 255, 255))
+        self.rect = self.surf.get_rect()
+
 
     def update(self, pressed_keys):
         if pressed_keys[K_UP]:
@@ -79,9 +83,10 @@ class Enemy(pygame.sprite.Sprite):
     def __init__(self):
         super(Enemy, self).__init__()
         self.surf = pygame.image.load("missile.png").convert()
-        self.surf.set_colorkey((255, 255, 255), RLEACCEL)
-        self.surf = pygame.Surface((20, 10))
-        self.surf.fill((255, 255, 255))
+        pygame.transform.scale(self.surf, [20, 10])
+        #self.surf.set_colorkey((255, 255, 255), RLEACCEL)
+        #self.surf = pygame.Surface((20, 10))
+        #self.surf.fill((255, 255, 255))
         self.rect = self.surf.get_rect(
             center=(
                 random.randint(SCREEN_WIDTH + 20, SCREEN_WIDTH + 100),
@@ -116,7 +121,7 @@ class Cloud(pygame.sprite.Sprite):
             self.kill()
 
 # Initialize pygame
-pygame.init()
+
 
 # Create the screen object
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -138,6 +143,8 @@ clock = pygame.time.Clock()
 
 # Variable to keep the main loop running
 running = True
+
+
 
 # Main loop
 while running:
@@ -173,8 +180,8 @@ while running:
             enemies.empty()
             clouds.empty()
 
-    screen.fill((0, 0, 0))
-    # screen.fill((135, 206, 250))
+    #screen.fill((0, 0, 0))
+    screen.fill((135, 206, 250))
 
     for entity in all_sprites:
         screen.blit(entity.surf, entity.rect)
