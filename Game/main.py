@@ -51,11 +51,11 @@ def game_over_screen():
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         super(Player, self).__init__()
-        self.surf = pygame.image.load("jet.png").convert()
+        self.surf = pygame.image.load("plane.png").convert()
         pygame.transform.scale(self.surf, [75, 25])
-        #self.surf.set_colorkey((255, 255, 255), RLEACCEL)
-        #self.surf = pygame.Surface((75, 25))
-        #self.surf.fill((255, 255, 255))
+        # self.surf.set_colorkey((255, 255, 255), RLEACCEL)
+        # self.surf = pygame.Surface((75, 25))
+        # self.surf.fill((255, 255, 255))
         self.rect = self.surf.get_rect()
 
 
