@@ -1,12 +1,7 @@
-# Import the pygame module
 import pygame
-
-# Import random for random numbers
 import random
+import sys
 
-# Import pygame.locals for easier access to key coordinates
-# Updated to conform to flake8 and black standards
-# from pygame.locals import *
 from pygame.locals import (
     RLEACCEL,
     K_UP,
@@ -22,6 +17,11 @@ from pygame.locals import (
 # Define constants for the screen width and height
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
+
+def display_score(score):
+    font = pygame.font.Font(None, 36)
+    score_text = font.render(f"Score: {score}", True, (255, 255, 255))
+    screen.blit(score_text, (10, 10))
 
 def game_over_screen():
     #Game Over Text
@@ -164,8 +164,8 @@ all_sprites.add(player)
 # Load and play our background music
 # Sound source: http://ccmixter.org/files/Apoxode/59262
 # License: https://creativecommons.org/licenses/by/3.0/
-pygame.mixer.music.load("Apoxode_-_Electric_1.mp3")
-pygame.mixer.music.play(loops=-1)
+#pygame.mixer.music.load("Apoxode_-_Electric_1.mp3")
+#pygame.mixer.music.play(loops=-1)
 
 # Load all our sound files
 # Sound sources: Jon Fincher
@@ -180,6 +180,8 @@ collision_sound.set_volume(0.5)
 
 # Variable to keep our main loop running
 running = True
+elapsed_time = 0
+score = 0
 
 # Our main loop
 while running:
@@ -217,6 +219,11 @@ while running:
     enemies.update()
     clouds.update()
 
+    elapsed_time += clock.tick(70) / 1000.0
+    score = int(elapsed_time)
+
+    display_score(score)
+
     if pygame.sprite.spritecollideany(player, enemies):
         if game_over_screen():
             player = Player()
@@ -249,7 +256,7 @@ while running:
     pygame.display.flip()
 
     # Ensure we maintain a 30 frames per second rate
-    clock.tick(30)
+    clock.tick(70)
 
 # At this point, we're done, so we can stop and quit the mixer
 pygame.mixer.music.stop()
